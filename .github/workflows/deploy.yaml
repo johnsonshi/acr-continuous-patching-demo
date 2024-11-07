@@ -8,7 +8,7 @@ permissions:
   id-token: write # Require write permission to Fetch an OIDC token.
       
 jobs: 
-  test:
+  deploy:
     runs-on: ubuntu-latest
     steps:
     - name: Azure CLI Login
@@ -18,14 +18,12 @@ jobs:
         tenant-id: ${{ secrets.AZURE_TENANT_ID }}
         subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
   
-    - name: Set up Azure CLI
+    - name: Connect to AKS using Azure CLI
       uses: azure/cli@v2
       with:
         azcliversion: latest
-
-    - name: Get AKS Credentials
-      run: |
-        az aks get-credentials --resource-group "${{ secrets.AZURE_RESOURCE_GROUP }}" --name "${{ secrets.AKS_CLUSTER_NAME }}"
+        inlineScript: |
+          az aks get-credentials --resource-group "${{ secrets.AZURE_RESOURCE_GROUP }}" --name "${{ secrets.AKS_CLUSTER_NAME }}"
 
     - name: Deploy nginx to AKS using kubectl
       run: |
@@ -33,7 +31,7 @@ jobs:
         envsubst < deployments/nginx.yaml | kubectl apply -f -
         kubectl rollout status deployment/nginx --timeout=180s
 
-    - name: Output nginx deployment details
+    - name: Output nginx deployment details using kubectl
       run: |
         # Output detailed information about the deployment
         kubectl describe deployment/nginx
