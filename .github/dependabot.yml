@@ -16,7 +16,7 @@ updates:
     ignore:
       # This configuration instructs Dependabot to continually update referebces to use the latest ACR Continuous Patch image with the latest incremental tag.
       # It also instructs Dependabot to prefer updating to official patched images rather than unofficial patched images from ACR Continuous Patching.
-      # Examples:
+      # Examples to illustrate the upgrade path:
       # If the deployment tag points to "1.21.1" and the ACR has the tags ["1.21.1", "1.21.1-0"], Dependabot bumps the tag to "1.21.1-0" as it is the latest ACR Continuous Patch image with the latest incremental tag.
       # If the deployment tag points to "1.21.1" and the ACR has the tags ["1.21.1", "1.21.1-0", "1.21.1-1"], Dependabot bumps the tag to "1.21.1-1" as it is the latest ACR Continuous Patch image with the latest incremental tag.
       # If the deployment tag points to "1.21.1-0" and the ACR has the tags ["1.21.1", "1.21.1-0", "1.21.1-1"], Dependabot bumps the tag to "1.21.1-1" as it is the latest ACR Continuous Patch image with the latest incremental tag.
