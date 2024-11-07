@@ -25,6 +25,9 @@ jobs:
         inlineScript: |
           az aks get-credentials --resource-group "${{ secrets.AZURE_RESOURCE_GROUP }}" --name "${{ secrets.AKS_CLUSTER_NAME }}"
 
+    - name: Checkout GitHub repository
+      uses: actions/checkout@v4
+
     - name: Deploy nginx to AKS using kubectl
       run: |
         export ACR_NAME="${{ secrets.ACR_NAME }}"
