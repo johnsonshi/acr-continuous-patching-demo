@@ -1,8 +1,0 @@
-# kustomization.yaml
-resources:
-  - nginx.yaml
-
-images:
-  - name: ACR_PLACEHOLDER.azurecr.io/nginx
-    newName: ${ACR_NAME}.azurecr.io/nginx
-    newTag: "1.21"

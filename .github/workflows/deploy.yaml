@@ -1,4 +1,5 @@
-name: Run the Kubernetes Deployment
+name: Deploy Azure Container Registry Image to Azure Kubernetes Service Cluster
+
 on:
   push:
     branches:
@@ -6,38 +7,38 @@ on:
 
 permissions:
   id-token: write # Require write permission to Fetch an OIDC token.
-      
+  contents: read
+  actions: read
+
 jobs: 
   deploy:
     runs-on: ubuntu-latest
+
     steps:
+
+    - name: Checkout GitHub repository
+      uses: actions/checkout@v4
+
     - name: Azure CLI Login
+      id: az-login
       uses: azure/login@v2
       with:
         client-id: ${{ secrets.AZURE_CLIENT_ID }}
         tenant-id: ${{ secrets.AZURE_TENANT_ID }}
         subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
-  
-    - name: Connect to AKS using Azure CLI
-      uses: azure/cli@v2
+
+    - name: Set AKS cluster context
+      id: aks-login
+      uses: azure/aks-set-context@v4
       with:
-        azcliversion: latest
-        inlineScript: |
-          az aks get-credentials --resource-group "${{ secrets.AZURE_RESOURCE_GROUP }}" --name "${{ secrets.AKS_CLUSTER_NAME }}"
+        resource-group: ${{ secrets.AZURE_RESOURCE_GROUP }}
+        cluster-name: ${{ secrets.AKS_CLUSTER_NAME }}
 
-    - name: Checkout GitHub repository
-      uses: actions/checkout@v4
-
-    - name: Set ACR_NAME Environment Variable
-      run: |
-        echo "ACR_NAME=${{ secrets.ACR_NAME }}" >> $GITHUB_ENV
-
-    - name: Deploy nginx to AKS using kubectl kustomize
-      run: |
-        kubectl apply -k ./deployments/
-        kubectl rollout status deployment/nginx --timeout=180s
-
-    - name: Output nginx deployment details using kubectl
-      run: |
-        # Output detailed information about the deployment
-        kubectl describe deployment/nginx
+    - name: Deploy to AKS cluster
+      id: aks-deploy
+      uses: Azure/k8s-deploy@v5
+      with:
+        action: deploy
+        strategy: basic
+        manifests: |
+          deployments/nginx.yaml
