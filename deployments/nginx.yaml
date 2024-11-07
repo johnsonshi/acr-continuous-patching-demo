@@ -16,6 +16,6 @@ spec:
     spec:
       containers:
       - name: nginx
-        image: ${ACR_NAME}.azurecr.io/nginx:1.21
+        image: ACR_PLACEHOLDER.azurecr.io/nginx:tagplaceholder
         ports:
         - containerPort: 80

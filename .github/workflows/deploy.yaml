@@ -28,10 +28,13 @@ jobs:
     - name: Checkout GitHub repository
       uses: actions/checkout@v4
 
-    - name: Deploy nginx to AKS using kubectl
+    - name: Set ACR_NAME Environment Variable
       run: |
-        export ACR_NAME="${{ secrets.ACR_NAME }}"
-        envsubst < deployments/nginx.yaml | kubectl apply -f -
+        echo "ACR_NAME=${{ secrets.ACR_NAME }}" >> $GITHUB_ENV
+
+    - name: Deploy nginx to AKS using kubectl kustomize
+      run: |
+        kubectl apply -k ./deployments/
         kubectl rollout status deployment/nginx --timeout=180s
 
     - name: Output nginx deployment details using kubectl
