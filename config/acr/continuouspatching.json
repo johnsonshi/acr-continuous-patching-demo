@@ -1,0 +1,11 @@
+{
+    "version": "v1",
+    "tag-convention" : "incremental",
+    "repositories": [
+        {
+            "repository": "nginx",
+            "tags": ["1.27.1"],
+            "enabled": true
+        }
+    ]
+}
