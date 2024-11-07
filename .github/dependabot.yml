@@ -1,0 +1,29 @@
+version: 2
+
+registries:
+  azure-container-registry:
+    type: docker-registry
+    url: https://acrcontinuouspatchingdemo.azurecr.io/
+    username: ${{ secrets.ACR_ADMIN_USERNAME }}
+    password: ${{ secrets.ACR_ADMIN_PASSWORD }}
+
+updates:
+  - package-ecosystem: docker
+    directory: "/deployments"
+    registries: "*"
+    schedule:
+      interval: "daily"
+    ignore:
+      # This configuration instructs Dependabot to continually update referebces to use the latest ACR Continuous Patch image with the latest incremental tag.
+      # It also instructs Dependabot to prefer updating to official patched images rather than unofficial patched images from ACR Continuous Patching.
+      # Examples:
+      # If the deployment tag points to "1.21.1" and the ACR has the tags ["1.21.1", "1.21.1-0"], Dependabot bumps the tag to "1.21.1-0" as it is the latest ACR Continuous Patch image with the latest incremental tag.
+      # If the deployment tag points to "1.21.1" and the ACR has the tags ["1.21.1", "1.21.1-0", "1.21.1-1"], Dependabot bumps the tag to "1.21.1-1" as it is the latest ACR Continuous Patch image with the latest incremental tag.
+      # If the deployment tag points to "1.21.1-0" and the ACR has the tags ["1.21.1", "1.21.1-0", "1.21.1-1"], Dependabot bumps the tag to "1.21.1-1" as it is the latest ACR Continuous Patch image with the latest incremental tag.
+      # If the deployment tag points to "1.21.1" and the ACR has the tags ["1.21.1", "1.21.1-0", "1.21.1-1", "1.21.2"], Dependabot bumps the tag to "1.21.2", preferring official patched image updates.
+      # If the deployment tag points to "1.21.1-0" and the ACR has the tags ["1.21.1", "1.21.1-0", "1.21.1-1", "1.21.2"], Dependabot bumps the tag to "1.21.2", preferring official patched image updates.
+      # If the deployment tag points to "1.21.1-0" and the ACR has the tags ["1.21.1", "1.21.1-0", "1.21.1-1", "1.22", "1.3", "2"], Dependabot bumps the tag to "1.21.1-1", as it has been instructed to ignore bumps to major and minor versions, ignoring the tags ["1.22", "1.3", "2"].
+      - dependency-name: "*"
+        update-types:
+        - "version-update:semver-major"
+        - "version-update:semver-minor"
