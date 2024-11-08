@@ -1,5 +1,6 @@
 version: 2
 
+# Configure access to ACR
 registries:
   azure-container-registry:
     type: docker-registry
