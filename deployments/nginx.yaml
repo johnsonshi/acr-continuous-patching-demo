@@ -16,6 +16,6 @@ spec:
     spec:
       containers:
       - name: nginx
-        image:  acrcontinuouspatchingdemo.azurecr.io/nginx:1.27.1-3
+        image:  acrcontinuouspatchingdemo.azurecr.io/nginx:1.27.1-16
         ports:
         - containerPort: 80
